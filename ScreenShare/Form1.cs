@@ -153,7 +153,7 @@ namespace ScreenShare
 
             try
             {
-                lock(bufferNetwork)
+                lock (bufferNetwork)
                 {
                     while (offset < stream.Length)
                     {
@@ -174,7 +174,8 @@ namespace ScreenShare
                         }
                     }
                 }
-            } catch
+            }
+            catch
             {
                 //
             }
@@ -188,7 +189,8 @@ namespace ScreenShare
                 {
                     bufferNetwork.Write(bytes, 0, bytes.Length);
                 }
-            } catch
+            }
+            catch
             {
                 //
             }
@@ -198,7 +200,7 @@ namespace ScreenShare
         {
             try
             {
-                lock(bufferNetwork)
+                lock (bufferNetwork)
                 {
                     var copy = bufferNetwork.ToArray();
                     var buffLen = count > copy.LongLength ? copy.LongLength : count;
@@ -217,7 +219,8 @@ namespace ScreenShare
 
                     return ret;
                 }
-            } catch
+            }
+            catch
             {
                 //
             }
