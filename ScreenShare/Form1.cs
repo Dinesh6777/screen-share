@@ -19,6 +19,7 @@ namespace ScreenShare
         private int _Fps = 60;
         private long _Quality = 100L;
         private MemoryStream bufferNetwork = new MemoryStream();
+        private long MaxBufferSize = 4L * 1024L * 1024L;
         private TcpListener tcpListener;
         private List<TcpClient> clients = new List<TcpClient>();
         private Form2 form = new Form2();
@@ -109,21 +110,37 @@ namespace ScreenShare
 
         private void timer2_Tick(object sender, EventArgs e)
         {
+            timer2.Enabled = false;
+
             TcpRoutine();
         }
 
         private async void TcpRoutine()
         {
-            var message = ToBytes("Get MEssage Here");
+            try
+            {
+                if (tcpListener.Pending())
+                {
+                    var client = await tcpListener.AcceptTcpClientAsync();
+
+                    client.SendBufferSize = int.MaxValue;
+                    clients.Add(client);
+                }
+
+                TcpSends();
+                CheckBufferSize();
+                timer2.Enabled = true;
+            } catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void TcpSends()
+        {
+            var message = ReadFromBuffer(MaxBufferSize);
             var listDisconnect = new List<int>();
             var idx = 0;
-
-            if (tcpListener.Pending())
-            {
-                var client = await tcpListener.AcceptTcpClientAsync();
-
-                clients.Add(client);
-            }
 
             foreach (var client in clients)
             {
@@ -226,6 +243,18 @@ namespace ScreenShare
             }
 
             return new byte[] { };
+        }
+
+        private void CheckBufferSize()
+        {
+            try
+            {
+                lock(bufferNetwork)
+                {
+                    if (bufferNetwork.Length > MaxBufferSize)
+                        bufferNetwork.SetLength(0);
+                }
+            } catch { }
         }
     }
 }
