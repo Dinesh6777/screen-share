@@ -17,6 +17,7 @@ namespace ScreenShare
         private int _Fps = 60;
         private long _Quality = 100L;
         private MemoryStream bufferImage = new MemoryStream();
+
         public int Interval {
             get => Convert.ToInt32(1000 / Fps);
         }
@@ -68,6 +69,16 @@ namespace ScreenShare
                 bitmap.Save(bufferImage, encoder, encoderParam);
                 Console.WriteLine("Image Size : " + bufferImage.Length);
             }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            Fps = Convert.ToInt32(numericUpDown1.Value);
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            Quality = Convert.ToInt64(numericUpDown2.Value);
         }
     }
 }
