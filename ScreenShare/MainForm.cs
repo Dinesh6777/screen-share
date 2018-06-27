@@ -13,8 +13,8 @@ namespace ScreenShare
 {
     public partial class MainForm : Form
     {
-        Form1 form1;
-        Form2 form2;
+        private Form1 form1;
+        private Form2 form2;
 
         public MainForm()
         {
