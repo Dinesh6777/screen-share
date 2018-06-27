@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tmrScreen = new System.Windows.Forms.Timer(this.components);
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.tmrPacket = new System.Windows.Forms.Timer(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
-            // timer1
+            // tmrScreen
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 500;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.tmrScreen.Interval = 500;
+            this.tmrScreen.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // numericUpDown1
             // 
@@ -106,17 +106,27 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Quality";
             // 
-            // timer2
+            // tmrPacket
             // 
-            this.timer2.Enabled = true;
-            this.timer2.Interval = 500;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            this.tmrPacket.Interval = 500;
+            this.tmrPacket.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(125, 72);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(82, 43);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Start";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(255, 87);
+            this.ClientSize = new System.Drawing.Size(222, 126);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDown2);
@@ -127,8 +137,10 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Basic Setting";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
@@ -137,12 +149,13 @@
         }
 
         #endregion
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer tmrScreen;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Timer tmrPacket;
+        private System.Windows.Forms.Button button1;
     }
 }
 

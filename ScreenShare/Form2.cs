@@ -19,7 +19,6 @@ namespace ScreenShare
         private int _Fps = 60;
         private TcpClient client = new TcpClient();
         private MemoryStream bufferNetwork = new MemoryStream();
-        private long MaxBufferSize = 4L * 1024L * 1024L;
 
         private byte[] Boundary
         {
@@ -38,14 +37,14 @@ namespace ScreenShare
             set
             {
                 _Fps = value;
-                timer2.Interval = Interval;
+                tmrScreen.Interval = Interval;
             }
         }
 
         public Form2()
         {
             InitializeComponent();
-            timer2.Interval = Interval;
+            tmrScreen.Interval = Interval;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -62,15 +61,67 @@ namespace ScreenShare
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Connect();
+            Close();
         }
 
-        private void Connect()
+        public void Connect(IPEndPoint end)
         {
-            var ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            var end = new IPEndPoint(ip, 8333);
-            client.ReceiveBufferSize = int.MaxValue;
-            client.Connect(end);
+            try
+            {
+                client.ReceiveBufferSize = int.MaxValue;
+                client.Connect(end);
+                tmrReceive.Enabled = true;
+                tmrScreen.Enabled = true;
+            } catch
+            {
+                throw;
+            }
+        }
+
+        public void Disconnect()
+        {
+            tmrReceive.Enabled = false;
+            tmrScreen.Enabled = false;
+
+            if (client.Connected)
+            {
+                client.Close();
+                client.Dispose();
+            }
+        }
+        
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            var arr = bufferNetwork.ToArray();
+            var bytePos = IndexOf(arr, Boundary);
+
+            if (bytePos > -1)
+            {
+                var takenByte = bytePos + Boundary.Length;
+                var arr_byte = ReadFromBuffer(takenByte);
+
+                TryShow(arr_byte);
+            }
+        }
+
+        private void TryShow(byte[] arr)
+        {
+            using (var stream = new MemoryStream())
+            {
+                try
+                {
+                    stream.Write(arr, 0, arr.Length - Boundary.Length - 1);
+
+                    using (var bitmap = Image.FromStream(stream))
+                    using (var gr = pictureBox1.CreateGraphics())
+                    {
+                        gr.DrawImage(bitmap, 0, 0, pictureBox1.Width, pictureBox1.Height);
+                    }
+                } catch (Exception ex)
+                {
+                    //
+                }
+            }
         }
 
         private void WriteToBuffer(byte[] bytes)
@@ -125,40 +176,6 @@ namespace ScreenShare
             return Encoding.ASCII.GetBytes(str);
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            var arr = bufferNetwork.ToArray();
-            var bytePos = IndexOf(arr, Boundary);
-
-            if (bytePos > -1)
-            {
-                var takenByte = bytePos + Boundary.Length;
-                var arr_byte = ReadFromBuffer(takenByte);
-
-                TryShow(arr_byte);
-            }
-        }
-
-        private void TryShow(byte[] arr)
-        {
-            using (var stream = new MemoryStream())
-            {
-                try
-                {
-                    stream.Write(arr, 0, arr.Length - Boundary.Length - 1);
-
-                    using (var bitmap = Image.FromStream(stream))
-                    using (var gr = pictureBox1.CreateGraphics())
-                    {
-                        gr.DrawImage(bitmap, 0, 0, pictureBox1.Width, pictureBox1.Height);
-                    }
-                } catch (Exception ex)
-                {
-                    //
-                }
-            }
-        }
-
         public int IndexOf(byte[] arrayToSearchThrough, byte[] patternToFind)
         {
             if (patternToFind.Length > arrayToSearchThrough.Length)
@@ -180,6 +197,12 @@ namespace ScreenShare
                 }
             }
             return -1;
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Disconnect();
+            bufferNetwork.Dispose();
         }
     }
 }

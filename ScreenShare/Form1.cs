@@ -22,7 +22,6 @@ namespace ScreenShare
         private long MaxBufferSize = 4L * 1024L * 1024L;
         private TcpListener tcpListener;
         private List<TcpClient> clients = new List<TcpClient>();
-        private Form2 form = new Form2();
 
         private object lockObject = new object();
 
@@ -42,7 +41,7 @@ namespace ScreenShare
             set
             {
                 _Fps = value;
-                timer1.Interval = Interval;
+                tmrScreen.Interval = Interval;
             }
         }
         public long Quality
@@ -56,17 +55,11 @@ namespace ScreenShare
                 }
             }
         }
+        public bool IsListen { get; set; }
 
         public Form1()
         {
             InitializeComponent();
-            timer1.Interval = Interval;
-            var ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            var endpoint = new IPEndPoint(ip, 8333);
-
-            tcpListener = new TcpListener(endpoint);
-            tcpListener.Start();
-            form.Show();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -82,9 +75,15 @@ namespace ScreenShare
                     new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, Quality)
                 };
 
-                bitmap.Save(bufferImage, encoder, encoderParam);
-                WriteToBuffer(bufferImage);
-                WriteToBuffer(Boundary);
+                try
+                {
+                    bitmap.Save(bufferImage, encoder, encoderParam);
+                    WriteToBuffer(bufferImage);
+                    WriteToBuffer(Boundary);
+                } catch
+                {
+                    //
+                }
             }
         }
 
@@ -101,16 +100,12 @@ namespace ScreenShare
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             tcpListener.Stop();
-
-            foreach (var client in clients)
-            {
-                client.Close();
-            }
+            TcpDisconnect();
         }
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            timer2.Enabled = false;
+            tmrPacket.Enabled = false;
 
             TcpRoutine();
         }
@@ -129,8 +124,8 @@ namespace ScreenShare
 
                 TcpSends();
                 CheckBufferSize();
-                timer2.Enabled = true;
-            } catch (Exception ex)
+                tmrPacket.Enabled = true;
+            } catch
             {
 
             }
@@ -144,16 +139,40 @@ namespace ScreenShare
 
             foreach (var client in clients)
             {
-                if (client.Connected)
-                    client.Client.Send(message);
-                else
-                    listDisconnect.Add(idx);
-
-                idx++;
+                try
+                {
+                    if (client.Connected)
+                        client.Client.Send(message);
+                    else
+                        listDisconnect.Add(idx);
+                } catch
+                {
+                    //Error while sending Packet
+                } finally
+                {
+                    idx++;
+                }
             }
 
-            foreach (var i in listDisconnect)
-                clients.RemoveAt(i);
+            lock(clients)
+            {
+                foreach (var i in listDisconnect)
+                    clients.RemoveAt(i);
+            }
+        }
+
+        private void TcpDisconnect()
+        {
+            lock(clients)
+            {
+                foreach (var client in clients)
+                {
+                    client.Close();
+                    client.Dispose();
+                }
+
+                clients.RemoveAll(tcpClient => true);
+            }
         }
 
         private byte[] ToBytes(string str)
@@ -249,12 +268,56 @@ namespace ScreenShare
         {
             try
             {
-                lock(bufferNetwork)
+                if (bufferNetwork.Length > MaxBufferSize)
                 {
-                    if (bufferNetwork.Length > MaxBufferSize)
-                        bufferNetwork.SetLength(0);
+                    ClearBuffer();
                 }
             } catch { }
+        }
+
+        private void ClearBuffer()
+        {
+            try
+            {
+                lock (bufferNetwork)
+                {
+                    bufferNetwork.Dispose();
+                    bufferNetwork = new MemoryStream();
+                }
+            } catch
+            {
+
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            tmrScreen.Interval = Interval;
+            var ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
+            var endpoint = new IPEndPoint(ip, 8333);
+
+            tcpListener = new TcpListener(endpoint);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (!IsListen)
+            {
+                tcpListener.Start();
+                tmrScreen.Enabled = true;
+                tmrPacket.Enabled = true;
+                button1.Text = "Stop";
+            } else
+            {
+                tmrScreen.Enabled = false;
+                tmrPacket.Enabled = false;
+                button1.Text = "Start";
+                tcpListener.Stop();
+                TcpDisconnect();
+                ClearBuffer();
+            }
+
+            IsListen = !IsListen;
         }
     }
 }
