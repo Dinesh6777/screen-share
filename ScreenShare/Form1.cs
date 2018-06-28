@@ -293,17 +293,23 @@ namespace ScreenShare
         private void Form1_Load(object sender, EventArgs e)
         {
             tmrScreen.Interval = Interval;
-            var ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            var endpoint = new IPEndPoint(ip, 8333);
+        }
+
+        private void TcpConnect()
+        {
+            var port = Convert.ToInt32(numericUpDown3.Value);
+            var ip = IPAddress.Parse(textBox1.Text);
+            var endpoint = new IPEndPoint(ip, port);
 
             tcpListener = new TcpListener(endpoint);
+            tcpListener.Start();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (!IsListen)
             {
-                tcpListener.Start();
+                TcpConnect();
                 tmrScreen.Enabled = true;
                 tmrPacket.Enabled = true;
                 button1.Text = "Stop";

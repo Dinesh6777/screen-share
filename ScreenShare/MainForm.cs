@@ -25,7 +25,7 @@ namespace ScreenShare
         {
             var c = (Control)sender;
 
-            if (e.KeyData == Keys.OemPeriod)
+            if (e.KeyData == Keys.OemPeriod || e.KeyData == Keys.Decimal)
             {
                 switch (c.Name)
                 {

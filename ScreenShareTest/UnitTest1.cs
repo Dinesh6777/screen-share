@@ -11,7 +11,7 @@ namespace ScreenShareTest
         private MemoryStream bufferNetwork = new MemoryStream();
 
         [TestMethod]
-        public void TestMethod1()
+        public void TestStream()
         {
             var mem = new MemoryStream();
             var bytes = ToBytes("Mesage without me");
@@ -37,6 +37,12 @@ namespace ScreenShareTest
             bytesfrom = ReadFromBuffer(20);
             Assert.AreEqual(20, bytesfrom.Length);
             Assert.AreEqual(12, bufferNetwork.Length);
+        }
+
+        [TestMethod]
+        public void TestAudioCapture()
+        {
+            //
         }
 
         private byte[] ToBytes(string str)

@@ -36,8 +36,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tmrPacket = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.SuspendLayout();
             // 
             // tmrScreen
@@ -71,7 +76,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(67, 43);
+            this.numericUpDown2.Location = new System.Drawing.Point(67, 37);
             this.numericUpDown2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.numericUpDown2.Minimum = new decimal(new int[] {
             1,
@@ -100,7 +105,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 45);
+            this.label2.Location = new System.Drawing.Point(12, 39);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 16);
             this.label2.TabIndex = 3;
@@ -113,7 +118,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(125, 72);
+            this.button1.Location = new System.Drawing.Point(125, 124);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(82, 43);
             this.button1.TabIndex = 4;
@@ -121,11 +126,64 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // numericUpDown3
+            // 
+            this.numericUpDown3.Location = new System.Drawing.Point(67, 67);
+            this.numericUpDown3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.numericUpDown3.Maximum = new decimal(new int[] {
+            60000,
+            0,
+            0,
+            0});
+            this.numericUpDown3.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(140, 22);
+            this.numericUpDown3.TabIndex = 5;
+            this.numericUpDown3.Value = new decimal(new int[] {
+            8333,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 69);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(32, 16);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Port";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(67, 96);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(140, 22);
+            this.textBox1.TabIndex = 7;
+            this.textBox1.Text = "127.0.0.1";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 99);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(20, 16);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "IP";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(222, 126);
+            this.ClientSize = new System.Drawing.Size(221, 181);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.numericUpDown3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -143,6 +201,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -156,6 +215,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Timer tmrPacket;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -115,6 +116,9 @@ namespace ScreenShare
                     using (var bitmap = Image.FromStream(stream))
                     using (var gr = pictureBox1.CreateGraphics())
                     {
+                        gr.CompositingMode = CompositingMode.SourceCopy;
+                        gr.CompositingQuality = CompositingQuality.HighSpeed;
+                        gr.SmoothingMode = SmoothingMode.HighSpeed;
                         gr.DrawImage(bitmap, 0, 0, pictureBox1.Width, pictureBox1.Height);
                     }
                 } catch (Exception ex)
